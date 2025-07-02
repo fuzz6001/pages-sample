@@ -1,0 +1,17 @@
+<script>
+fetch("https://script.google.com/macros/s/AKfycbxg3JL8aYp_wV367-BtsKiFcvB03hud4n2MCP3ClIVbODB1tF_bcMaGTB_6DePFKVJ-wA/exec")
+  .then(response => response.json())
+  .then(data => {
+    const table = document.createElement("table");
+    data.forEach(row => {
+      const tr = document.createElement("tr");
+      row.forEach(cell => {
+        const td = document.createElement("td");
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+    document.body.appendChild(table);
+  });
+</script>
