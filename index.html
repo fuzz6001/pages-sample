@@ -1,45 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Book List</title>
+  <!-- Load external CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
-<script>
-fetch("https://script.google.com/macros/s/AKfycbyx1mLhK-asPpZqDEHHs_KPnJQErCyIM9Tx4FLUn8Z3ourcgcxNArXS7EFdkKudz9JqwA/exec")
-  .then(response => response.json())
-  .then(data => {
-    const table = document.createElement("table");
+<body>
+  <table id="bookTable"></table>
 
-    // Define items
-    const visibleKeys = ["Serial", "Title", "Edition"];
-    const detailKeys = ["Serial", "Title", "Edition", "Package", "Price", "Release Date", "Barcode"];
+  <!-- Detail panel (initially hidden) -->
+  <div id="detailPanel" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; display: none;">
+    <h3>Details</h3>
+    <ul id="detailList"></ul>
+  </div>
 
-    // Create header
-    const headerRow = document.createElement("tr");
-    visibleKeys.forEach(key => {
-      const th = document.createElement("th");
-      th.textContent = key;
-      headerRow.appendChild(th);
-    });
-    table.appendChild(headerRow);
+  <script>
+    // Fetch book data from external API
+    fetch("https://script.google.com/macros/s/AKfycbyx1mLhK-asPpZqDEHHs_KPnJQErCyIM9Tx4FLUn8Z3ourcgcxNArXS7EFdkKudz9JqwA/exec")
+      .then(response => response.json())
+      .then(data => {
+        const table = document.getElementById("bookTable");
 
-    // Rows
-    data.forEach(entry => {
-      const tr = document.createElement("tr");
+        // Define fields for table and detail panel
+        const visibleKeys = ["Serial", "Title", "Edition"];
+        const detailKeys = ["Serial", "Title", "Edition", "Package", "Price", "Release Date", "Barcode"];
 
-      visibleKeys.forEach(key => {
-        const td = document.createElement("td");
-        td.textContent = entry[key];
-        tr.appendChild(td);
+        // Generate table header
+        const headerRow = document.createElement("tr");
+        visibleKeys.forEach(key => {
+          const th = document.createElement("th");
+          th.textContent = key;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        // Generate table rows
+        data.forEach(entry => {
+          const tr = document.createElement("tr");
+
+          visibleKeys.forEach(key => {
+            const td = document.createElement("td");
+            td.textContent = entry[key] ?? "?";
+            tr.appendChild(td);
+          });
+
+          // Display detail panel on row click
+          tr.style.cursor = "pointer";
+          tr.addEventListener("click", () => {
+            const detailPanel = document.getElementById("detailPanel");
+            const detailList = document.getElementById("detailList");
+            detailList.innerHTML = ""; // Clear previous content
+
+            detailKeys.forEach(key => {
+              const li = document.createElement("li");
+              li.textContent = `${key}: ${entry[key] ?? "?"}`;
+              detailList.appendChild(li);
+            });
+
+            detailPanel.style.display = "block";
+          });
+
+          table.appendChild(tr);
+        });
       });
-
-      // Details
-      tr.style.cursor = "pointer";
-      tr.addEventListener("click", () => {
-        const details = detailKeys.map(key => `${key}: ${entry[key] ?? "?"}`).join("\n");
-        alert("Details:\n\n" + details);
-      });
-
-      table.appendChild(tr);
-    });
-
-    document.body.appendChild(table);
-  });
-</script>
+  </script>
+</body>
+</html>
