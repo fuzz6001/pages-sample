@@ -4,11 +4,11 @@ fetch("https://script.google.com/macros/s/AKfycbyx1mLhK-asPpZqDEHHs_KPnJQErCyIM9
   .then(data => {
     const table = document.createElement("table");
 
-    // 表示項目の定義
+    // Define items
     const visibleKeys = ["Serial", "Title", "Edition"];
     const detailKeys = ["Serial", "Title", "Edition", "Package", "Price", "Release Date", "Barcode"];
 
-    // ヘッダーの作成
+    // Create header
     const headerRow = document.createElement("tr");
     visibleKeys.forEach(key => {
       const th = document.createElement("th");
