@@ -4,22 +4,35 @@ fetch("https://script.google.com/macros/s/AKfycbyx1mLhK-asPpZqDEHHs_KPnJQErCyIM9
   .then(data => {
     const table = document.createElement("table");
 
-    data.forEach((row, index) => {
+    // 表示項目の定義
+    const visibleKeys = ["Serial", "Title", "Edition"];
+    const detailKeys = ["Serial", "Title", "Edition", "Package", "Price", "Release Date", "Barcode"];
+
+    // ヘッダーの作成
+    const headerRow = document.createElement("tr");
+    visibleKeys.forEach(key => {
+      const th = document.createElement("th");
+      th.textContent = key;
+      headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    // Rows
+    data.forEach(entry => {
       const tr = document.createElement("tr");
 
-      row.forEach(cell => {
+      visibleKeys.forEach(key => {
         const td = document.createElement("td");
-        td.textContent = cell;
+        td.textContent = entry[key];
         tr.appendChild(td);
       });
 
-      // ヘッダー行は除外する（最初の行）
-      if (index > 0) {
-        tr.style.cursor = "pointer";
-        tr.addEventListener("click", () => {
-          alert("詳細情報:\n" + row.join("\n"));
-        });
-      }
+      // Details
+      tr.style.cursor = "pointer";
+      tr.addEventListener("click", () => {
+        const details = detailKeys.map(key => `${key}: ${entry[key] ?? "?"}`).join("\n");
+        alert("Details:\n\n" + details);
+      });
 
       table.appendChild(tr);
     });
