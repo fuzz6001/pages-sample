@@ -2,31 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Book List</title>
+  <title>List</title>
   <!-- Load external CSS -->
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Basic fallback styles for the detail panel */
+    #detailPanel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #f7f7f7;
+      border-top: 2px solid #888;
+      padding: 15px;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+    }
+
+    #closeButton {
+      float: right;
+      background-color: #c00;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #closeButton:hover {
+      background-color: #900;
+    }
+  </style>
 </head>
 <body>
   <table id="bookTable"></table>
 
-  <!-- Detail panel (initially hidden) -->
-  <div id="detailPanel" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; display: none;">
-    <h3>Details</h3>
+  <!-- Detail panel displayed at the bottom -->
+  <div id="detailPanel">
+    <button id="closeButton">Close</button>
+    <h3>📘 Details</h3>
     <ul id="detailList"></ul>
   </div>
 
   <script>
-    // Fetch book data from external API
+    // Fetch data from external API
     fetch("https://script.google.com/macros/s/AKfycbyx1mLhK-asPpZqDEHHs_KPnJQErCyIM9Tx4FLUn8Z3ourcgcxNArXS7EFdkKudz9JqwA/exec")
       .then(response => response.json())
       .then(data => {
         const table = document.getElementById("bookTable");
 
-        // Define fields for table and detail panel
         const visibleKeys = ["Serial", "Title", "Edition"];
         const detailKeys = ["Serial", "Title", "Edition", "Package", "Price", "Release Date", "Barcode"];
 
-        // Generate table header
+        // Create table header
         const headerRow = document.createElement("tr");
         visibleKeys.forEach(key => {
           const th = document.createElement("th");
@@ -35,7 +64,7 @@
         });
         table.appendChild(headerRow);
 
-        // Generate table rows
+        // Create table rows
         data.forEach(entry => {
           const tr = document.createElement("tr");
 
@@ -45,12 +74,12 @@
             tr.appendChild(td);
           });
 
-          // Display detail panel on row click
+          // Click row to show detail panel
           tr.style.cursor = "pointer";
           tr.addEventListener("click", () => {
             const detailPanel = document.getElementById("detailPanel");
             const detailList = document.getElementById("detailList");
-            detailList.innerHTML = ""; // Clear previous content
+            detailList.innerHTML = ""; // Clear previous details
 
             detailKeys.forEach(key => {
               const li = document.createElement("li");
@@ -58,10 +87,15 @@
               detailList.appendChild(li);
             });
 
-            detailPanel.style.display = "block";
+            detailPanel.style.display = "block"; // Show detail panel
           });
 
           table.appendChild(tr);
+        });
+
+        // Close button to hide panel
+        document.getElementById("closeButton").addEventListener("click", () => {
+          document.getElementById("detailPanel").style.display = "none";
         });
       });
   </script>
